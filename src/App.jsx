@@ -6,13 +6,20 @@ import {
 	Navigate,
 } from "react-router-dom";
 import Sidebar from "./components/layout/Sidebar/Sidebar";
+import Layout from "./components/layout/Layout";
+import Dashboard from "./pages/Dashboard";
 import "@/styles/global.css";
 
 function App() {
 	return (
-		<div>
-			<Sidebar />
-		</div>
+		<Router>
+			<Layout>
+				<Routes>
+					<Route path="/" element={<Navigate to="/dashboard" replace />} />
+					<Route path="/dashboard" element={<Dashboard />} />
+				</Routes>
+			</Layout>
+		</Router>
 	);
 }
 

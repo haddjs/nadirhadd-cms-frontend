@@ -1,1 +1,40 @@
-@import "tailwindcss";
+@reference "tailwindcss"
+
+body {
+	font-family: var(--font-inter);
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+@layer components {
+	.btn {
+		@apply px-4 py-2 rounded-md font-medium transition-colors;
+	}
+
+	.btn-primary {
+		@apply text-white hover:opacity-90;
+	}
+
+	.card {
+		@apply bg-white rounded-lg shadow p-6;
+	}
+
+	.input {
+		@apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:border-transparent;
+	}
+}

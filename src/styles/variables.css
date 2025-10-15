@@ -1,0 +1,30 @@
+@theme {
+	--color-primary: #4361ee;
+	--color-secondary: #3f37c9;
+	--color-text: #2c3e50;
+
+	--spacing-sidebar: 2rem;
+
+	--font-family-inter: "Inter", sans-serif;
+	--font-family-poppins: "Poppins", sans-serif;
+}
+
+:root {
+	--font-inter: "Inter", sans-serif;
+	--font-poppins: "Poppins", sans-serif;
+	--primary: #4361ee;
+	--secondary: #3f37c9;
+	--background: #f8f9fa;
+	--text: #2c3e50;
+	--sidebar-width: 2rem;
+}
+
+@layer utilities {
+	.font-inter {
+		font-family: var(--font-family-inter);
+	}
+
+	.font-poppins {
+		font-family: var(--font-family-poppins);
+	}
+}
