@@ -1,11 +1,14 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import { React } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { MENU_ITEMS } from "@/utils/constants";
 import SidebarItem from "./SidebarItem";
 import { Avatar } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 
 const Sidebar = () => {
+	const location = useLocation();
+	const curr = location.pathname;
+
 	return (
 		<div className="fixed top-0 left-0 h-screen w-64 lg:bg-zinc-100">
 			<div className="h-full flex flex-col font-poppins items-start gap-10 px-5 py-5">
@@ -26,6 +29,7 @@ const Sidebar = () => {
 								<SidebarItem
 									IconComponent={item.iconComponent}
 									title={item.title}
+									active={curr === item.path}
 								/>
 							</li>
 						</NavLink>
