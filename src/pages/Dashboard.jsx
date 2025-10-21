@@ -1,14 +1,18 @@
 import React from "react";
-import { Card, CardContent } from "@mui/material";
+import DashboardCard from "@/components/common/DashboardCard";
 
 const Dashboard = () => {
 	return (
-		<div>
-			<Card className="w-64">
-				<CardContent className="bg-red-300/40 backdrop-blur-xl shadow-2xl">
-					Projects
-				</CardContent>
-			</Card>
+		<div className="flex flex-col gap-8">
+			<h1 className="font-bold text-white text-4xl">Dashboard</h1>
+			<div className="flex gap-5">
+				<DashboardCard color={"black"} title={"Projects"} text={"0"} />
+				<DashboardCard color={"white"} title={"Experience"} text={"0"} />
+				<DashboardCard color={"white"} title={"Tags"} text={"9"} />
+			</div>
+			<div>
+				<h1 className="font-semibold text-2xl text-white">Recent Activities</h1>
+			</div>
 		</div>
 	);
 };
