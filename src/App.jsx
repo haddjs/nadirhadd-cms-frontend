@@ -9,6 +9,7 @@ import Sidebar from "./components/layout/Sidebar/Sidebar";
 import Layout from "./components/layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
+import Experience from "./pages/Experience";
 import "@/styles/global.css";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
 					<Route path="/" element={<Navigate to="/dashboard" replace />} />
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/dashboard/project" element={<Projects />} />
+					<Route path="/dashboard/experience" element={<Experience />} />
 				</Routes>
 			</Layout>
 		</Router>

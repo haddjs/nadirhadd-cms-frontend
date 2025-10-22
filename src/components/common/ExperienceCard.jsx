@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProjectsCard = ({ title, description }) => {
+const ExperienceCard = ({ title, description }) => {
 	const stack = [
 		{
 			id: 1,
@@ -30,4 +30,4 @@ const ProjectsCard = ({ title, description }) => {
 	);
 };
 
-export default ProjectsCard;
+export default ExperienceCard;

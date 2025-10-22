@@ -5,7 +5,7 @@ import MainContent from "./MainContent/MainContent";
 
 const Layout = ({ children }) => {
 	return (
-		<div className="flex h-screen">
+		<div className="flex h-screen bg-[url(/images/bg.jpg)] bg-cover">
 			<Sidebar />
 			<MainContent>{children}</MainContent>
 		</div>
