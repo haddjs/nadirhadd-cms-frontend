@@ -1,14 +1,31 @@
-import { React } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+
 import { MENU_ITEMS } from "@/utils/constants";
 import SidebarItem from "./SidebarItem";
 import { Avatar } from "@mui/material";
 import { Logout } from "@mui/icons-material";
-import Clock from "../../common/Clock";
+import Clock from "@/components/common/Clock";
+
+import useAuth from "@/hooks/useAuth";
 
 const Sidebar = () => {
+	const { logout } = useAuth();
+	const [message, setMessage] = useState("");
+
+	const navigate = useNavigate();
 	const location = useLocation();
 	const curr = location.pathname;
+
+	const handleLogout = async () => {
+		try {
+			const result = await logout();
+			setMessage(result);
+			navigate("/login");
+		} catch (error) {
+			setMessage(error.message);
+		}
+	};
 
 	return (
 		<div className="fixed top-0 left-0 h-screen w-64 bg-zinc-100/20 backdrop-blur-md ring-2 ring-white/20 text-white">
@@ -36,10 +53,13 @@ const Sidebar = () => {
 						</NavLink>
 					))}
 					<hr className="text-zinc-500" />
-					<div className="flex gap-5 py-2 px-5 w-50 hover:bg-white/20 hover:ps-7 rounded-lg transition-all cursor-pointer">
+					<button
+						onClick={handleLogout}
+						className="flex gap-5 py-2 px-5 w-50 hover:bg-white/20 hover:ps-7 rounded-lg transition- cursor-pointer">
 						<Logout />
 						Logout
-					</div>
+					</button>
+					<p>{message}</p>
 				</ul>
 				<Clock />
 			</div>

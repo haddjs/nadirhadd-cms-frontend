@@ -1,4 +1,5 @@
 {
+	"proxy": "http://localhost:3000",
 	"name": "nadirhadd-cms",
 	"private": true,
 	"version": "1.0.0",

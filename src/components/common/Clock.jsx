@@ -10,15 +10,15 @@ const Clock = () => {
 		return () => clearInterval(timerId);
 	}, []);
 
-	const h = time.getHours();
-	const m = time.getMinutes().toString().padStart(2, "0");
-	const s = time.getSeconds();
+	const formatTime = time.toLocaleString("id-ID", {
+		hour: "numeric",
+		minute: "numeric",
+		hour12: true,
+	});
 
 	return (
 		<div className="bg-white/20 py-3 px-5 w-50 rounded-md ring-2 ring-white/25">
-			<h1 className="font-bold text-white">
-				{h} : {m} : {s}
-			</h1>
+			<h1 className="font-bold text-black">{formatTime}</h1>
 		</div>
 	);
 };

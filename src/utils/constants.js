@@ -26,3 +26,14 @@ export const MENU_ITEMS = [
 		iconComponent: Work,
 	},
 ];
+
+export const FORM_ITEMS = [
+	{
+		title: "Name",
+		previewInput: "Enter your name.",
+	},
+	{
+		title: "About",
+		previewInput: "Enter about yourself.",
+	},
+];
