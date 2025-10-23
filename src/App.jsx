@@ -5,7 +5,7 @@ import {
 	Route,
 	Navigate,
 } from "react-router-dom";
-import Sidebar from "./components/layout/Sidebar/Sidebar";
+import ProtectedRoutes from "./context/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -19,12 +19,14 @@ function App() {
 		<Router>
 			<Routes>
 				<Route path="/login" element={<Login />} />
-				<Route element={<Layout />}>
-					<Route path="/" element={<Navigate to="/dashboard" replace />} />
-					<Route path="/dashboard" element={<Dashboard />} />
-					<Route path="/dashboard/about" element={<About />} />
-					<Route path="/dashboard/project" element={<Projects />} />
-					<Route path="/dashboard/experience" element={<Experience />} />
+				<Route element={<ProtectedRoutes />}>
+					<Route element={<Layout />}>
+						<Route path="/" element={<Navigate to="/dashboard" replace />} />
+						<Route path="/dashboard" element={<Dashboard />} />
+						<Route path="/dashboard/about" element={<About />} />
+						<Route path="/dashboard/project" element={<Projects />} />
+						<Route path="/dashboard/experience" element={<Experience />} />
+					</Route>
 				</Route>
 			</Routes>
 		</Router>

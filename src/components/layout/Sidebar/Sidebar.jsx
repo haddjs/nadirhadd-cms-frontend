@@ -10,7 +10,7 @@ import Clock from "@/components/common/Clock";
 import useAuth from "@/hooks/useAuth";
 
 const Sidebar = () => {
-	const { logout } = useAuth();
+	const { user, logout } = useAuth();
 	const [message, setMessage] = useState("");
 
 	const navigate = useNavigate();
@@ -19,12 +19,27 @@ const Sidebar = () => {
 
 	const handleLogout = async () => {
 		try {
-			const result = await logout();
-			setMessage(result);
+			await logout();
 			navigate("/login");
 		} catch (error) {
 			setMessage(error.message);
 		}
+	};
+
+	const getUserInitials = () => {
+		if (!user?.username) return "U";
+
+		return user.username
+			.split(" ")
+			.map((name) => name[0])
+			.join("")
+			.toUpperCase()
+			.slice(0, 2);
+	};
+
+	const getDisplayName = () => {
+		if (!user) return "Loading...";
+		return user.username || user.name || "User";
 	};
 
 	return (
@@ -34,9 +49,9 @@ const Sidebar = () => {
 					<i>nh</i> <span className="font-bold">CMS.</span>
 				</p>
 				<div className="flex items-center gap-4">
-					<Avatar>NH</Avatar>
+					<Avatar>{getUserInitials()}</Avatar>
 					<div className="flex flex-col text-sm">
-						<span className="font-bold">Nadir Hadd</span>
+						{getDisplayName()}
 						<span>Admin</span>
 					</div>
 				</div>

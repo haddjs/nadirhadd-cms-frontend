@@ -7,17 +7,22 @@ const LoginForm = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [message, setMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
+		setLoading(true);
+		setMessage("");
+
 		try {
-			const data = await login({ username, password });
-			setMessage(`Welcome ${data.user.username}`);
+			await login({ username, password });
 			navigate("/dashboard");
 		} catch (error) {
-			setMessage(`${error.message}`);
+			setMessage(error.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -50,9 +55,9 @@ const LoginForm = () => {
 					<button
 						type="submit"
 						className="font-semibold py-2 px-4 bg-white/10 rounded-lg shadow-lg backdrop-blur-lg ring-1 ring-white/30 hover:bg-black/10 hover:ring-white/10 transition-all">
-						Login
+						{loading ? "Logging in..." : "Login"}
 					</button>
-					<p>{message}</p>
+					{message && <p>{message}</p>}
 				</div>
 			</form>
 		</div>
