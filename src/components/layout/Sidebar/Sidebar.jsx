@@ -70,7 +70,7 @@ const Sidebar = () => {
 					<hr className="text-zinc-500" />
 					<button
 						onClick={handleLogout}
-						className="flex gap-5 py-2 px-5 w-50 hover:bg-white/20 hover:ps-7 rounded-lg transition- cursor-pointer">
+						className="flex gap-5 py-2 px-5 w-50 hover:bg-white/20 hover:ps-7 rounded-lg transition-all cursor-pointer">
 						<Logout />
 						Logout
 					</button>

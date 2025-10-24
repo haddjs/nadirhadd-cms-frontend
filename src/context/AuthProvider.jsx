@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
 	const login = useCallback(async (credentials) => {
 		try {
-			const response = await api.post("api/auth/login", credentials);
+			const response = await api.post("/api/auth/login", credentials);
 			const { token, user } = response.data;
 
 			localStorage.setItem("token", token);
@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }) => {
 			console.error("Logout failed", error);
 		} finally {
 			localStorage.removeItem("token");
+			localStorage.removeItem("user");
 			setUser(null);
 		}
 	}, []);

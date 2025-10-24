@@ -1,8 +1,7 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { Image } from "@mui/icons-material";
 
-const AvatarUpload = () => {
-	const [image, setImage] = useState(null);
+const AvatarUpload = ({ image, onImageChange }) => {
 	const fileInputRef = useRef(null);
 
 	const handleFileChange = (e) => {
@@ -10,19 +9,15 @@ const AvatarUpload = () => {
 		if (file) {
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				setImage(reader.result);
+				onImageChange(reader.result);
 			};
 			reader.readAsDataURL(file);
 		}
 	};
 
-	const triggerFileInput = () => {
-		fileInputRef.current.click();
-	};
+	const triggerFileInput = () => fileInputRef.current?.click();
 
-	const removeImage = () => {
-		setImage(null);
-	};
+	const removeImage = () => onImageChange("");
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -46,6 +41,7 @@ const AvatarUpload = () => {
 			<div className="flex gap-6">
 				{!image ? (
 					<button
+						type="button"
 						onClick={triggerFileInput}
 						className="py-2 px-4 bg-black/10 rounded-lg shadow-lg backdrop-blur-md ring-1 ring-white/30 hover:bg-white/10 hover:ring-white/10 transition-all">
 						Upload File
@@ -53,11 +49,13 @@ const AvatarUpload = () => {
 				) : (
 					<>
 						<button
+							type="button"
 							onClick={triggerFileInput}
 							className="py-2 px-4 bg-black/10 rounded-lg shadow-lg backdrop-blur-lg ring-1 ring-white/30 hover:bg-white/10 hover:ring-white/10 transition-all">
 							Change File
 						</button>
 						<button
+							type="button"
 							onClick={removeImage}
 							className="py-2 px-4 bg-black/10 rounded-lg shadow-lg backdrop-blur-lg ring-1 ring-white/30 hover:bg-white/10 hover:ring-white/10 transition-all">
 							Remove
@@ -65,6 +63,8 @@ const AvatarUpload = () => {
 					</>
 				)}
 			</div>
+
+			{image && <p>Current: {image.substring(0, 30)}...</p>}
 
 			<input
 				type="file"
