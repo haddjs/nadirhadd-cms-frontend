@@ -1,10 +1,5 @@
 import React from "react";
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoutes from "./context/ProtectedRoutes";
 import Layout from "./components/layout/Layout";
 import Login from "./pages/Login";
@@ -16,20 +11,18 @@ import "@/styles/global.css";
 
 function App() {
 	return (
-		<Router>
-			<Routes>
-				<Route path="/login" element={<Login />} />
-				<Route element={<ProtectedRoutes />}>
-					<Route element={<Layout />}>
-						<Route path="/" element={<Navigate to="/dashboard" replace />} />
-						<Route path="/dashboard" element={<Dashboard />} />
-						<Route path="/dashboard/about" element={<About />} />
-						<Route path="/dashboard/project" element={<Projects />} />
-						<Route path="/dashboard/experience" element={<Experience />} />
-					</Route>
+		<Routes>
+			<Route path="/login" element={<Login />} />
+			<Route element={<ProtectedRoutes />}>
+				<Route element={<Layout />}>
+					<Route path="/" element={<Navigate to="/dashboard" replace />} />
+					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/dashboard/about" element={<About />} />
+					<Route path="/dashboard/project" element={<Projects />} />
+					<Route path="/dashboard/experience" element={<Experience />} />
 				</Route>
-			</Routes>
-		</Router>
+			</Route>
+		</Routes>
 	);
 }
 

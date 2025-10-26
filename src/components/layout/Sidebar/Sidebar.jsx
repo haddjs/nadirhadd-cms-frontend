@@ -56,9 +56,9 @@ const Sidebar = () => {
 					</div>
 				</div>
 				<ul className="flex flex-col gap-5 pb-5">
-					{MENU_ITEMS.map((item) => (
-						<NavLink to={item.path}>
-							<li key={item.path}>
+					{MENU_ITEMS.map((item, i) => (
+						<NavLink to={item.path} key={i}>
+							<li>
 								<SidebarItem
 									IconComponent={item.iconComponent}
 									title={item.title}

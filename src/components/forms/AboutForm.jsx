@@ -15,8 +15,6 @@ const AboutForm = ({ onShowSnackbar }) => {
 
 	useEffect(() => {
 		if (about) {
-			console.log("Setting from with about data", about);
-
 			setForm({
 				profile_picture: about.profile_picture || "",
 				summary_profile: about.summary_profile || "",
@@ -49,17 +47,17 @@ const AboutForm = ({ onShowSnackbar }) => {
 	return (
 		<div className="flex flex-col gap-8 bg-white/10 rounded-lg shadow-lg backdrop-blur-sm ring-1 ring-white/30 p-6">
 			<div className="font-semibold text-3xl">My Profile</div>
-			<div className="flex w-full">
+			<div className="grid grid-cols-3">
 				<AvatarUpload
 					image={form.profile_picture}
 					onImageChange={(newImage) =>
 						setForm({ ...form, profile_picture: newImage })
 					}
 				/>
-				<form onSubmit={handleSave}>
+				<form onSubmit={handleSave} className="col-span-2">
 					{FORM_ITEMS.map((item, index) => (
-						<div key={index} className="p-8">
-							<div className="flex flex-col gap-2 w-64">
+						<div key={index} className="p-6">
+							<div className="flex flex-col gap-2">
 								<label className="font-semibold">{item.title}</label>
 								{item.title === "Name" ? (
 									<input
@@ -76,7 +74,7 @@ const AboutForm = ({ onShowSnackbar }) => {
 										placeholder={item.previewInput}
 										value={form.summary_profile}
 										onChange={handleChange}
-										maxRows={2}
+										maxRows={4}
 										className="ring-1 ring-white/20 rounded-md p-3 outline-0 focus:ring-2 focus:ring-white/40 shadow-lg transition-all"
 									/>
 								)}

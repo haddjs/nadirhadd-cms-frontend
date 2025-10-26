@@ -18,7 +18,17 @@ const Clock = () => {
 
 	return (
 		<div className="bg-white/20 py-3 px-5 w-50 rounded-md ring-2 ring-white/25">
-			<h1 className="font-bold text-black">{formatTime}</h1>
+			<h1 className="font-bold text-black">
+				{formatTime > "10.00PM" && (
+					<div className="flex flex-col gap-3">
+						<h1>{formatTime}</h1>
+						<span className="font-medium">
+							Sleep, <br />
+							Enough coding for today.
+						</span>
+					</div>
+				)}
+			</h1>
 		</div>
 	);
 };

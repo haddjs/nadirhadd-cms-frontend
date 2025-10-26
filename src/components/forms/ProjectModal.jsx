@@ -4,45 +4,44 @@ import {
 	DialogTitle,
 	DialogHeader,
 	DialogFooter,
-	DialogDescription,
 	DialogContent,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { toast } from "sonner";
+import TechSelect from "./TechSelect";
+import useTech from "@/hooks/useTech";
 
-const ProjectModal = ({ isOpen, onClose, project, mode = "view", onSave }) => {
+const ProjectModal = ({ isOpen, onClose, project, mode = "edit", onSave }) => {
 	const [formData, setFormData] = useState({
 		project_title: "",
-		shortDescription: "",
 		project_description: "",
 		live_url: "",
-		image: "",
-		technologies: "",
+		techStack: [],
 		demoLink: "",
-		githubLink: "",
 	});
 
+	const [loading, setLoading] = useState(false);
+	const { technologies, loading: techLoading, error: techError } = useTech();
+
 	useEffect(() => {
-		if (mode === "view" && project) {
-			setFormData({
-				project_title: project.project_title || "",
-				shortDescription: project.shortDescription || "",
-				project_description: project.project_description || "",
-				live_url: project.live_url || "",
-				image: project.image || "",
-				technologies: project.technologies || "",
-				githubLink: project.githubLink || "",
-			});
-		} else if (mode === "add") {
-			setFormData({
-				project_title: "",
-				shortDescription: "",
-				project_description: "",
-				live_url: "",
-				image: "",
-				technologies: "",
-				githubLink: "",
-			});
+		if (isOpen) {
+			if (mode === "edit" && project) {
+				setFormData({
+					project_title: project.project_title || "",
+					project_description: project.project_description || "",
+					live_url: project.live_url || "",
+					techStack:
+						project.projectTech?.map((pt) => pt.technologies.name) || [],
+				});
+			} else {
+				setFormData({
+					project_title: "",
+					project_description: "",
+					live_url: "",
+					techStack: [],
+				});
+			}
 		}
 	}, [isOpen, mode, project]);
 
@@ -54,177 +53,126 @@ const ProjectModal = ({ isOpen, onClose, project, mode = "view", onSave }) => {
 		}));
 	};
 
-	const handleSave = () => {
-		const projectData = {
-			...formData,
-		};
-		onSave(projectData);
+	const handleTechStackChange = (newTechStack) => {
+		setFormData((prev) => ({
+			...prev,
+			techStack: newTechStack,
+		}));
 	};
 
-	if (mode === "view" && !project) return null;
+	const handleSave = async () => {
+		if (!formData.project_title.trim()) {
+			toast.error("Project title is required!");
+			return;
+		}
+
+		if (!formData.project_description.trim()) {
+			toast.error("Project description is required!");
+			return;
+		}
+		setLoading(true);
+
+		try {
+			const projectData = {
+				...formData,
+				techStack: formData.techStack,
+			};
+			await onSave(projectData);
+			toast.success(mode === "edit" ? "Project Updated!" : "Project Added!");
+		} catch (error) {
+			console.error("Error saving project", error);
+			toast.error("Failed to save project");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	if (mode === "edit" && (!project || !project.project_title)) {
+		console.warn("Project data is missing in edit mode", project);
+		return null;
+	}
+
+	const renderFormFields = () => (
+		<div className="flex flex-col gap-7">
+			<div className="flex flex-col gap-2">
+				<label>Title *</label>
+				<input
+					type="text"
+					name="project_title"
+					value={formData.project_title}
+					onChange={handleInputChange}
+					className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
+					required
+				/>
+			</div>
+
+			<div className="flex flex-col gap-2">
+				<label>Description</label>
+				<Textarea
+					type="text"
+					name="project_description"
+					value={formData.project_description}
+					onChange={handleInputChange}
+					className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
+					required
+				/>
+			</div>
+
+			<div className="flex flex-col gap-2">
+				<label>Live URL</label>
+				<input
+					type="text"
+					name="live_url"
+					value={formData.live_url}
+					onChange={handleInputChange}
+					className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
+					required
+				/>
+			</div>
+
+			<div className="flex flex-col gap-2">
+				<label className="font-medium">Technologies</label>
+				{techLoading ? (
+					<div className="text-white">Loading technologies...</div>
+				) : techError ? (
+					<div>Error loading suggestions.</div>
+				) : (
+					<TechSelect
+						value={formData.techStack}
+						onChange={handleTechStackChange}
+						existingTechnologies={technologies}
+					/>
+				)}
+			</div>
+		</div>
+	);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
 			<DialogContent className="text-white">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">
-						{mode === "view" ? (
-							project?.project_title
+						{mode === "edit" ? (
+							`Edit: ${project?.project_title}`
 						) : (
-							<h3>Add New Project</h3>
+							<p>Add New Project</p>
 						)}
 					</DialogTitle>
 				</DialogHeader>
-				<div className="flex flex-col">
-					{mode === "view" ? (
-						<div className="flex flex-col gap-7">
-							<div className="flex flex-col gap-2">
-								<label>Title</label>
-								<input
-									type="text"
-									name="project_title"
-									value={formData.project_title}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Description</label>
-								<Textarea
-									type="text"
-									name="project_description"
-									value={formData.project_description}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Live URL</label>
-								<input
-									type="text"
-									name="live_url"
-									value={formData.live_url}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Images</label>
-								<img
-									src={formData.image}
-									alt={formData.image}
-									width={50}
-									height={50}
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Technologies</label>
-								<select name="technologies">
-									{project.technologies.map((tech, i) => (
-										<option value={tech} key={i}>
-											{tech}
-										</option>
-									))}
-								</select>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>GitHub Link</label>
-								<Textarea
-									type="text"
-									name="githubLink"
-									value={formData.githubLink}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-						</div>
-					) : (
-						<div className="flex flex-col gap-7">
-							<div className="flex flex-col gap-2">
-								<label>Title</label>
-								<input
-									type="text"
-									name="project_title"
-									value={formData.project_title}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Description</label>
-								<Textarea
-									type="text"
-									name="project_description"
-									value={formData.project_description}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Live URL</label>
-								<input
-									type="text"
-									name="live_url"
-									value={formData.live_url}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Images</label>
-								<img src={formData.image} alt={formData.image} />
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>Technologies</label>
-								<input
-									type="text"
-									name="technologies"
-									value={formData.technologies}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-
-							<div className="flex flex-col gap-2">
-								<label>GitHub Link</label>
-								<Textarea
-									type="text"
-									name="githubLink"
-									value={formData.githubLink}
-									onChange={handleInputChange}
-									className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-									required
-								/>
-							</div>
-						</div>
-					)}
-				</div>
+				<div className="flex flex-col">{renderFormFields()}</div>
 				<DialogFooter>
-					<Button variant="glass" onClick={onClose} className="cursor-pointer">
+					<Button
+						variant={"glass"}
+						onClick={onClose}
+						className="cursor-pointer"
+						disabled={loading}>
 						Cancel
 					</Button>
 					<Button
 						variant="glass"
 						onClick={handleSave}
 						className="cursor-pointer">
-						Save
+						{loading ? "Saving..." : mode === "edit" ? "Update" : "Add"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

@@ -1,45 +1,57 @@
 import { useState } from "react";
 import ProjectsCard from "@/components/common/ProjectsCard";
 import ProjectModal from "@/components/forms/ProjectModal";
+import ConfirmModal from "../components/common/ConfirmModal";
 import AddButton from "@/components/common/AddButton";
+import useProject from "../hooks/useProject";
+import { toast } from "sonner";
 
-const PROJECT_DATA = [
-	{
-		id: 1,
-		project_title: "E-Commerce Platform",
-		shortDescription: "A full-stack e-commerce solution",
-		project_description:
-			"A comprehensive e-commerce platform featuring user authentication, product catalog, shopping cart, and payment integration.",
-		fullDescription:
-			"A comprehensive e-commerce platform featuring user authentication, product catalog, shopping cart, and payment integration. Built with modern web technologies for optimal performance and user experience.",
-		image: "https://picsum.photos/seed/picsum/200/300",
-		technologies: ["React", "Node.js", "MongoDB"],
-		live_url: "https://demo.example.com",
-		githubLink: "https://github.com/username/project",
-	},
-	{
-		id: 2,
-		project_title: "E-Sport Platform",
-		shortDescription: "Gaming and esports tournament platform",
-		project_description:
-			"A comprehensive e-commerce platform featuring user authentication, product catalog, shopping cart, and payment integration.",
-		fullDescription:
-			"A platform for organizing and participating in esports tournaments with real-time match tracking and player statistics.",
-		image: "https://picsum.photos/seed/picsum/200/299",
-		technologies: ["Next.js", "TypeScript", "PostgreSQL"],
-		live_url: "https://demo.example.com",
-		githubLink: "https://github.com/username/esport",
-	},
-];
+const testAuth = () => {
+	const token = localStorage.getItem("token");
+	console.log("Auth Token:", token);
+	console.log("Token exist", !!token);
+
+	if (!token) {
+		console.log("No token found, redirecting to login.");
+	}
+};
 
 const Projects = () => {
+	const { projects, loading, error, addProject, updateProject, deleteProject } =
+		useProject();
+
 	const [selectedProject, setSelectedProject] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [modalMode, setModalMode] = useState("view");
+	const [modalMode, setModalMode] = useState("edit");
+	const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+	const [projectToDelete, setProjectToDelete] = useState(null);
 
-	const handleViewDetails = (project) => {
+	const handleOpenConfirm = (projectId) => {
+		setProjectToDelete(projectId);
+		setIsConfirmOpen(true);
+	};
+
+	const handleCloseConfirm = () => {
+		setIsConfirmOpen(false);
+		setProjectToDelete(null);
+	};
+
+	const handleConfirmDelete = async () => {
+		if (projectToDelete) {
+			try {
+				await deleteProject(projectToDelete);
+				handleCloseConfirm();
+				toast.success("Project deleted!");
+			} catch (error) {
+				console.error("Error deleting project", error);
+				toast.error("Failed to delete project.", error.message);
+			}
+		}
+	};
+
+	const handleEditProject = (project) => {
 		setSelectedProject(project);
-		setModalMode("view");
+		setModalMode("edit");
 		setIsModalOpen(true);
 	};
 
@@ -54,10 +66,24 @@ const Projects = () => {
 		setSelectedProject(null);
 	};
 
-	const handleSaveProject = (projectData) => {
-		console.log("Save project:".projectData);
-		handleCloseModal();
+	const handleSaveProject = async (projectData) => {
+		try {
+			if (modalMode === "add") {
+				await addProject(projectData);
+				toast.success("Project added!");
+			} else {
+				await updateProject(selectedProject.id, projectData);
+				toast.success("Project updated!");
+			}
+			handleCloseModal();
+		} catch (error) {
+			console.error("Error saving project", error);
+			toast.error("Failed to save project.", error.message);
+		}
 	};
+
+	if (loading) return <div>Loading projects...</div>;
+	if (error) return <div>Error: {error}</div>;
 
 	return (
 		<div className="flex flex-col gap-8">
@@ -66,11 +92,12 @@ const Projects = () => {
 				<AddButton title={"Add Project"} onClick={handleAddProject} />
 			</div>
 			<div className="flex gap-5">
-				{PROJECT_DATA.map((project) => (
+				{projects.map((project) => (
 					<ProjectsCard
 						key={project.id}
 						project={project}
-						onViewDetails={handleViewDetails}
+						onEdit={handleEditProject}
+						onDeleteProject={handleOpenConfirm}
 					/>
 				))}
 			</div>
@@ -82,8 +109,16 @@ const Projects = () => {
 				mode={modalMode}
 				onSave={handleSaveProject}
 			/>
+
+			<ConfirmModal
+				isOpen={isConfirmOpen}
+				onClose={handleCloseConfirm}
+				onClick={handleConfirmDelete}
+			/>
 		</div>
 	);
 };
+
+testAuth();
 
 export default Projects;
