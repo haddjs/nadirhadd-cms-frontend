@@ -23,7 +23,7 @@ export const ProjectProvider = ({ children }) => {
 	const addProject = useCallback(async (projectData) => {
 		try {
 			const newProject = await projectServices.addProject(projectData);
-			setProjects((prev) => [...prev, newProject]);
+			setProjects((prev) => [...prev, newProject.project]);
 			return newProject;
 		} catch (error) {
 			setError(error.message || "Failed to add project");
@@ -38,7 +38,9 @@ export const ProjectProvider = ({ children }) => {
 				projectData
 			);
 			setProjects((prev) =>
-				prev.map((project) => (project.id === id ? updatedProject : project))
+				prev.map((project) =>
+					project.id === parseInt(id) ? updatedProject.project : project
+				)
 			);
 			return updatedProject;
 		} catch (error) {
