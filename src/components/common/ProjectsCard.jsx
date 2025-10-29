@@ -12,7 +12,7 @@ const ProjectsCard = ({ project, onEdit, onDeleteProject }) => {
 
 	return (
 		<div className="flex flex-col gap-5 w-128 bg-white/10 px-6 py-4 rounded-lg ring-2 ring-white/25 shadow-lg backdrop-blur-md text-white">
-			<div className="flex justify-between items-center">
+			<div className="flex justify-between items-center gap-5">
 				<h1 className="font-semibold text-2xl">{project.project_title}</h1>
 				<Button variant="destructive" onClick={handleDeleteClick}>
 					<Trash />

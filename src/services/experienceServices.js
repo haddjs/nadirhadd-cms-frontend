@@ -46,7 +46,7 @@ const experienceServices = {
 			const response = await api.delete(`/api/experience/${id}`);
 			return response.data;
 		} catch (error) {
-			console.error(`Error deleting experience: ${id}`, error);
+			console.error(`Error deleting experience: ${id}`, error.message);
 			throw error;
 		}
 	},

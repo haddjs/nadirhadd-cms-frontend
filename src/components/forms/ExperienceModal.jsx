@@ -194,7 +194,7 @@ const ExperienceModal = ({
 							value={formData.end_date}
 							onChange={handleInputChange}
 							className="ring-1 ring-white/20 rounded-md shadow-lg p-2 outline-0 focus:ring-2 focus:ring-white/40 transition-all"
-							min={new Date().toISOString().split("T")[0]}
+							max={new Date().toISOString().split("T")[0]}
 						/>
 					)}
 				</div>
